@@ -18,7 +18,9 @@
   
 2. **Função Withdraw**
 
-'''function withdraw(uint256 amount) external whenNotPaused {
+'''
+
+      function withdraw(uint256 amount) external whenNotPaused {
         require(userBalances[msg.sender] >= amount, "Insufficient balance");
 
         uint256 oldBalance = address(this).balance;
@@ -33,5 +35,7 @@
         assert(oldBalance == oldBalance - amount);
 
         emit Withdrawn(msg.sender, amount);
-    }'''
+    }
+
+
 
