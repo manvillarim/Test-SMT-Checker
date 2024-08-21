@@ -1,4 +1,4 @@
-## Pesquisa - Verificação Formal de Contratos Inteligentes
+# Pesquisa - Verificação Formal de Contratos Inteligentes
 
 
 
