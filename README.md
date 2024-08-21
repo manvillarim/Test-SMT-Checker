@@ -13,6 +13,9 @@
 ## Contrato Vulnerabilities
 
 1. **Informações Gerais**
+
    - Um token ERC20 com adição de funcionalidades como controle de propriedade, pausabilidade, vesting e taxa de transferência, além de permitir a criação (mint) e destruição (burn) de tokens pelo proprietário. O contrato também suporta operações de depósito e retirada de Ether, com uma vulnerabilidade de reentrância intencional na função de retirada (withdraw).
+  
+2. **Função Withdraw**
 
 
