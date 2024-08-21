@@ -4,6 +4,9 @@
 
 ## Metodologia
 
-**1a Etapa**: Criação de um contrato inteligente com vulnerabilidade proposital, mas que o SMT Checker não consiga detectá-la.\n
-**2a Etapa**: Simplificação do código com preservação semântica visando simplicar o caminho que o model-checker percorrerá.\n
-**3a Etapa**: Resultados e comparação com o Certora Prover.\n
+**1ª Etapa**: Criação de um contrato inteligente com vulnerabilidade proposital, mas que o SMT Checker não consiga detectá-la.
+
+**2ª Etapa**: Simplificação do código com preservação semântica visando simplificar o caminho que o model-checker percorrerá.
+
+**3ª Etapa**: Resultados e comparação com o Certora Prover.
+
