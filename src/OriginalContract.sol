@@ -274,7 +274,7 @@ contract Vulnerable is IERC20, Ownable, Pausable {
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success, "Transfer failed");
 
-        assert(oldBalance == oldBalance - amount);
+        assert(address(this).balance == oldBalance - amount);
 
         emit Withdrawn(msg.sender, amount);
     }
