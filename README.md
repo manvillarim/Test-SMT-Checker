@@ -18,4 +18,20 @@
   
 2. **Função Withdraw**
 
+'''function withdraw(uint256 amount) external whenNotPaused {
+        require(userBalances[msg.sender] >= amount, "Insufficient balance");
+
+        uint256 oldBalance = address(this).balance;
+
+        // Atualiza o saldo do usuário antes de enviar o valor
+        userBalances[msg.sender] = userBalances[msg.sender].sub(amount);
+
+        // Envia o valor ao usuário
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
+
+        assert(oldBalance == oldBalance - amount);
+
+        emit Withdrawn(msg.sender, amount);
+    }'''
 
