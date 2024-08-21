@@ -1,5 +1,6 @@
 # Pesquisa - Verificação Formal de Contratos Inteligentes
 
+## Esse projeto visa demonstrar a funcionalidade do SMT Checker em contratos onde há explosão de dados, e comparar sua atuação com as outras ferramentas de verificação formal da indústria.
 
 
 
