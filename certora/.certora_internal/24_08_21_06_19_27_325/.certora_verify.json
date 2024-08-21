@@ -1,0 +1,8 @@
+{
+    "importFilesToOrigRelpaths": {},
+    "primary_contract": "Vulnerable",
+    "specfile": "/home/manoel/forge/projeto-smt/certora/vulnerable.spec",
+    "specfileOrigRelpath": "vulnerable.spec",
+    "specfilesToImportDecls": {},
+    "type": "spec"
+}

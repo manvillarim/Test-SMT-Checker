@@ -1,0 +1,28 @@
+{
+    "CLI_package_name": "certora-cli",
+    "CLI_version": "7.10.2",
+    "branch": "master",
+    "certora_ci_client": null,
+    "conf": {
+        "files": [
+            "contract4.sol:Vulnerable"
+        ],
+        "process": "emv",
+        "verify": "Vulnerable:vulnerable.spec"
+    },
+    "conf_path": null,
+    "cwd_relative": "certora",
+    "dirty": true,
+    "group_id": null,
+    "main_spec": "vulnerable.spec",
+    "origin": "",
+    "python_version": "3.12.4",
+    "raw_args": [
+        "/home/manoel/.local/bin/certoraRun",
+        "contract4.sol:Vulnerable",
+        "--verify",
+        "Vulnerable:vulnerable.spec"
+    ],
+    "revision": "de107b30bc1e01aea33fe4f5cb0d0aa30aec40f0",
+    "timestamp": "1724242818.697658"
+}
