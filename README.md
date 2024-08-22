@@ -36,6 +36,15 @@
              emit Withdrawn(msg.sender, amount);
          }
    
+   - A vulnerabilidade dessa função pode ser explorada da seguinte forma:
+     
+    1. Chamada Externa: A linha (bool success, ) = msg.sender.call{value: amount}(""); envia o valor ao usuário, mas permite que o usuário execute código arbitrário (como outra chamada à função withdraw)            antes que a execução da função original termine.
+
+    2. Estado Inconsistente: Se o usuário conseguir chamar withdraw novamente antes que a primeira chamada termine, ele pode retirar mais fundos do que possui, pois o saldo do usuário                                (userBalances[msg.sender]) ainda não foi atualizado na segunda chamada.
+
+    3. Exploração: Um atacante pode criar um contrato malicioso que chama a função withdraw repetidamente dentro de sua função fallback, esvaziando o contrato antes que a primeira chamada termine.
+
+   
 
 
 
