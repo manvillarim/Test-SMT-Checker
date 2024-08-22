@@ -36,9 +36,7 @@
              emit Withdrawn(msg.sender, amount);
          }
    
-   - A vulnerabilidade dessa função pode ser explorada da seguinte forma:
-  
-       Ao utilizar a função 'call', o valor é enviado ao usuário, mas permite que ele possa executar um código arbritário antes que a função original termine. Assim, o usuário pode chamar o withdraw    novamente antes que a primeira chamada termine, retirando mais fundos do que possui, já que o saldo ainda não foi atualizado na segunda chamada. Dessa forma, um hacker pode criar um contrato malicioso que chama repetidamente a função withdraw, como ocorreu no DAO em 2016.
+   -   Ao utilizar a função 'call', o valor é enviado ao usuário, mas permite que ele possa executar um código arbritário antes que a função original termine. Assim, o usuário pode chamar o withdraw    novamente antes que a primeira chamada termine, retirando mais fundos do que possui, já que o saldo ainda não foi atualizado na segunda chamada. Dessa forma, um hacker pode criar um contrato malicioso que chama repetidamente a função withdraw, como ocorreu no DAO em 2016.
 
    
 
