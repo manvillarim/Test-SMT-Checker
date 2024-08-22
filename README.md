@@ -35,8 +35,45 @@
          
              emit Withdrawn(msg.sender, amount);
          }
+
    
-   -   Ao utilizar 'call', o valor é enviado ao usuário, mas permite que ele possa executar um código arbitário antes que a função original termine. Assim, o usuário pode chamar o withdraw    novamente antes que a primeira chamada termine, retirando mais fundos do que possui, já que o saldo ainda não foi atualizado na segunda chamada. Dessa forma, um hacker pode criar um contrato malicioso que chama repetidamente a função withdraw, como ocorreu no DAO em 2016.
+   -   Ao utilizar 'call', o valor é enviado ao usuário, mas permite que ele possa executar um código antes que a função original acabe. Assim, o usuário pode chamar o withdraw novamente antes que a primeira chamada termine, retirando mais fundos do que possui, já que o saldo ainda não foi atualizado na segunda chamada. Dessa forma, um hacker pode criar um contrato malicioso que chama repetidamente a função withdraw, como ocorreu no DAO em 2016.
+
+  
+3. **Situação Inicial**
+
+   - Ao compilar o 'OriginalContract.sol', o SMT ou não consegue identificar o erro ou entra em loop eterno, dependendo de como o timeout está configurado.
+  
+4. **Simplificação do Código**
+
+   - Para otimizar o contrato visando o funcionamento do model-checker, 3 fases foram feitas:
+  
+     1. **Compreensão e divisão**:
+
+       - Podemos dividir o contrato Vulnerabilities em 5 partes independentes com suas respectivas funções:
+         
+       - ERC20: totalSupply, balanceOf, transfer, allowance, approve, transferFrom.
+       - Admin: mint, burn, pause, unpause, setTransferTaxRate, setGovernanceContract.
+       - Vesting: startVesting, claimVestedTokens.
+       - Depósito e Saque: deposit, withdraw.
+       - Consulta: getContractBalance.
+    
+       - Assim, vê-se que devemos otimizar o código de modo que apenas o Depósito e Saque esteja funcionando, uma vez que o erro da reentrância ocorre nessa parte.
+    
+     2. **Remoção**:
+    
+        - Antes de apagar as funções que não façam parte do Depósito e Saque, também se deve analisar os outros módulos do arquivo:
+       
+        - ERC20: Define as funções e eventos padrão para um token ERC20. --> Utilizado pelo ERC20
+        - SafeMath: Fornece operações matemáticas seguras. --> Utilizado em todo o contrato
+        - Ownable: Controla a propriedade do contrato. --> Utilizado pelo vesting e admin
+        - Pausable: Permite que o contrato seja pausado e despausado. --> utilizado pelo vesting e Depósito e saque, mas não é estritamente necessário
+       
+        - Assim, podemos deixar apenas as funções deposit, withdraw e getContractBalance, além de bliblioteca SafeMath, otimizando ao máximo.
+        
+
+
+
 
    
 
