@@ -52,25 +52,25 @@
 
        - Podemos dividir o contrato Vulnerabilities em 5 partes independentes com suas respectivas funções:
          
-       - ERC20: totalSupply, balanceOf, transfer, allowance, approve, transferFrom.
-       - Admin: mint, burn, pause, unpause, setTransferTaxRate, setGovernanceContract.
-       - Vesting: startVesting, claimVestedTokens.
-       - Depósito e Saque: deposit, withdraw.
-       - Consulta: getContractBalance.
-    
-       - Assim, vê-se que devemos otimizar o código de modo que apenas o Depósito e Saque esteja funcionando, uma vez que o erro da reentrância ocorre nessa parte.
+          - ERC20: totalSupply, balanceOf, transfer, allowance, approve, transferFrom.
+          - Admin: mint, burn, pause, unpause, setTransferTaxRate, setGovernanceContract.
+          - Vesting: startVesting, claimVestedTokens.
+          - Depósito e Saque: deposit, withdraw.
+          - Consulta: getContractBalance.
+       
+          - Assim, vê-se que devemos otimizar o código de modo que apenas o Depósito e Saque esteja funcionando, uma vez que o erro da reentrância ocorre nessa parte.
     
      2. **Remoção**:
     
         - Antes de apagar as funções que não façam parte do Depósito e Saque, também se deve analisar os outros módulos do arquivo:
        
-        - ERC20: Define as funções e eventos padrão para um token ERC20. --> Utilizado pelo ERC20
-        - SafeMath: Fornece operações matemáticas seguras. --> Utilizado em todo o contrato
-        - Ownable: Controla a propriedade do contrato. --> Utilizado pelo vesting e admin
-        - Pausable: Permite que o contrato seja pausado e despausado. --> utilizado pelo vesting e Depósito e saque, mas não é estritamente necessário
-       
-        - Assim, podemos deixar apenas as funções deposit, withdraw e getContractBalance, além de bliblioteca SafeMath, otimizando ao máximo.
-        
+           - ERC20: Define as funções e eventos padrão para um token ERC20. --> Utilizado pelo ERC20
+           - SafeMath: Fornece operações matemáticas seguras. --> Utilizado em todo o contrato
+           - Ownable: Controla a propriedade do contrato. --> Utilizado pelo vesting e admin
+           - Pausable: Permite que o contrato seja pausado e despausado. --> utilizado pelo vesting e Depósito e saque, mas não é estritamente necessário
+          
+           - Assim, podemos deixar apenas as funções deposit, withdraw e getContractBalance, além de bliblioteca SafeMath, otimizando ao máximo.
+           
 
 
 
