@@ -19,7 +19,6 @@
 2. **Função Withdraw**
 
 
-         ```solidity
          function withdraw(uint256 amount) external whenNotPaused {
              require(userBalances[msg.sender] >= amount, "Insufficient balance");
          
