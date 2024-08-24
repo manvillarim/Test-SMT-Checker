@@ -8,7 +8,7 @@
 
 **2ª Etapa:** Simplificação do código mantendo a semântica para melhorar a capacidade do model-checker de identificar a vulnerabilidade.
 
-**3ª Etapa:** Análise dos resultados obtidos e comparação com outras ferramentas de verificação formal, como o Certora Prover.
+**3ª Etapa:** Análise dos resultados obtidos.
 
 ## Contrato Vulnerabilities
 
@@ -17,6 +17,23 @@
 O contrato `Vulnerable` é um token ERC20 que adiciona funcionalidades como controle de propriedade, pausabilidade, vesting e taxa de transferência. Também permite a criação e destruição de tokens e operações de depósito e retirada de Ether. Este contrato contém uma vulnerabilidade de reentrância intencional na função de retirada (`withdraw`), que é crucial para testar a eficácia de ferramentas de verificação formal.
 
 **2. Função Withdraw**
+
+    function withdraw(uint256 amount) external whenNotPaused {
+        require(userBalances[msg.sender] >= amount, "Insufficient balance");
+    
+        uint256 oldBalance = address(this).balance;
+    
+        // Atualiza o saldo do usuário antes de enviar o valor
+        userBalances[msg.sender] = userBalances[msg.sender].sub(amount);
+    
+        // Envia o valor ao usuário
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
+    
+        assert(address(this).balance == oldBalance - amount);
+    
+        emit Withdrawn(msg.sender, amount);
+    }
 
 A função `withdraw` é projetada para demonstrar uma vulnerabilidade de reentrância. Ao utilizar `call`, o valor é enviado ao usuário, permitindo que ele execute código antes da conclusão da função original. Isso possibilita que o usuário chame `withdraw` novamente antes que o saldo seja atualizado, resultando na retirada de mais fundos do que o disponível. Essa vulnerabilidade pode ser explorada para criar um contrato malicioso que retira repetidamente fundos, como ocorreu no ataque ao DAO em 2016.
 
