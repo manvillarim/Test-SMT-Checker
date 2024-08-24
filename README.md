@@ -14,7 +14,7 @@
 
 **1. Informações Gerais**
 
-O contrato `Vulnerable` é um token ERC20 que adiciona funcionalidades como controle de propriedade, pausabilidade, vesting e taxa de transferência. Também permite a criação e destruição de tokens e operações de depósito e retirada de Ether. Este contrato contém uma vulnerabilidade de reentrância intencional na função de retirada (`withdraw`), que é crucial para testar a eficácia de ferramentas de verificação formal.
+O contrato `Vulnerable` é um token ERC20 que adiciona funcionalidades como controle de propriedade, pausabilidade, vesting e taxa de transferência. Também permite a criação e destruição de tokens e operações de depósito e retirada de Ether. Este contrato contém uma vulnerabilidade de reentrância intencional na função de retirada (`withdraw`), que será usada para testar a eficácia de ferramentas de verificação formal.
 
 **2. Função Withdraw**
 
