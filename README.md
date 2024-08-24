@@ -4,77 +4,55 @@
 
 ## Metodologia
 
-**1ª Etapa**: Criação de um contrato inteligente com vulnerabilidade proposital, mas que o SMT Checker não consiga detectá-la.
+**1ª Etapa:** Criação de um contrato inteligente com uma vulnerabilidade proposital que não é detectada pelo SMT Checker.
 
-**2ª Etapa**: Simplificação do código com preservação semântica, visando facilitar o caminho que o model-checker percorrerá.
+**2ª Etapa:** Simplificação do código mantendo a semântica para melhorar a capacidade do model-checker de identificar a vulnerabilidade.
 
-**3ª Etapa**: Resultados
+**3ª Etapa:** Análise dos resultados obtidos e comparação com outras ferramentas de verificação formal, como o Certora Prover.
 
 ## Contrato Vulnerabilities
 
-1. **Informações Gerais**
+**1. Informações Gerais**
 
-   - Um token ERC20 com adição de funcionalidades como controle de propriedade, pausabilidade, vesting e taxa de transferência, além de permitir a criação (mint) e destruição (burn) de tokens pelo proprietário. O contrato também suporta operações de depósito e retirada de Ether, com uma vulnerabilidade de reentrância intencional na função de retirada (withdraw).
-  
-2. **Função Withdraw**
+O contrato `Vulnerable` é um token ERC20 que adiciona funcionalidades como controle de propriedade, pausabilidade, vesting e taxa de transferência. Também permite a criação e destruição de tokens e operações de depósito e retirada de Ether. Este contrato contém uma vulnerabilidade de reentrância intencional na função de retirada (`withdraw`), que é crucial para testar a eficácia de ferramentas de verificação formal.
 
+**2. Função Withdraw**
 
-         function withdraw(uint256 amount) external whenNotPaused {
-             require(userBalances[msg.sender] >= amount, "Insufficient balance");
-         
-             uint256 oldBalance = address(this).balance;
-         
-             // Atualiza o saldo do usuário antes de enviar o valor
-             userBalances[msg.sender] = userBalances[msg.sender].sub(amount);
-         
-             // Envia o valor ao usuário
-             (bool success, ) = msg.sender.call{value: amount}("");
-             require(success, "Transfer failed");
-         
-             assert(address(this).balance == oldBalance - amount);
-         
-             emit Withdrawn(msg.sender, amount);
-         }
+A função `withdraw` é projetada para demonstrar uma vulnerabilidade de reentrância. Ao utilizar `call`, o valor é enviado ao usuário, permitindo que ele execute código antes da conclusão da função original. Isso possibilita que o usuário chame `withdraw` novamente antes que o saldo seja atualizado, resultando na retirada de mais fundos do que o disponível. Essa vulnerabilidade pode ser explorada para criar um contrato malicioso que retira repetidamente fundos, como ocorreu no ataque ao DAO em 2016.
 
-   
-   -   Ao utilizar 'call', o valor é enviado ao usuário, mas permite que ele possa executar um código antes que a função original acabe. Assim, o usuário pode chamar o withdraw novamente antes que a primeira chamada termine, retirando mais fundos do que possui, já que o saldo ainda não foi atualizado na segunda chamada. Dessa forma, um hacker pode criar um contrato malicioso que chama repetidamente a função withdraw, como ocorreu no DAO em 2016.
+**3. Situação Inicial**
 
-  
-3. **Situação Inicial**
+Ao compilar o `OriginalContract.sol`, o SMT Checker pode não identificar o erro ou entrar em um loop eterno, dependendo da configuração do timeout.
 
-   - Ao compilar o 'OriginalContract.sol', o SMT ou não consegue identificar o erro ou entra em loop eterno, dependendo de como o timeout está configurado.
-  
-4. **Simplificação do Código**
+**4. Simplificação do Código**
 
-   - Para otimizar o contrato visando o funcionamento do model-checker, 2 fases foram feitas:
-  
-     1. **Compreensão e divisão**:
+Para otimizar o contrato para o model-checker, foram realizadas as seguintes fases:
 
-       - Podemos dividir o contrato Vulnerabilities em 5 partes independentes com suas respectivas funções:
-         
-          - ERC20: totalSupply, balanceOf, transfer, allowance, approve, transferFrom.
-          - Admin: mint, burn, pause, unpause, setTransferTaxRate, setGovernanceContract.
-          - Vesting: startVesting, claimVestedTokens.
-          - Depósito e Saque: deposit, withdraw.
-          - Consulta: getContractBalance.
-       
-          - Assim, vê-se que devemos otimizar o código de modo que apenas o Depósito e Saque esteja funcionando, uma vez que o erro da reentrância ocorre nessa parte.
-    
-     2. **Remoção**:
-    
-        - Antes de apagar as funções que não façam parte do Depósito e Saque, também se deve analisar os outros módulos do arquivo:
-       
-           - ERC20: Define as funções e eventos padrão para um token ERC20. --> Utilizado pelo ERC20
-           - SafeMath: Fornece operações matemáticas seguras. --> Utilizado em todo o contrato
-           - Ownable: Controla a propriedade do contrato. --> Utilizado pelo vesting e admin
-           - Pausable: Permite que o contrato seja pausado e despausado. --> utilizado pelo vesting e Depósito e saque, mas não é estritamente necessário
-          
-           - Assim, podemos deixar apenas as funções deposit, withdraw e getContractBalance, além de bliblioteca SafeMath, otimizando ao máximo.
-         
-5. **Resultados**
+**4.1. Compreensão e Divisão**
 
-   - Após as modificações, o SMT checker identifica com perfeição a vulnerabilidade do contrato:
-  
-     ![Imagem do Projeto](https://github.com/manvillarim/Test-SMT-Checker/blob/main/lib/Captura%20de%20tela%20de%202024-08-22%2011-49-19.png)
+O contrato `Vulnerable` pode ser dividido em cinco partes funcionais:
 
-   - Assim, percebe-se que o SMT checker é capaz de identificar vulnerabilidades em contratos inteligentes de escopo maior, a partir de uma otimização direcionada ao problema que se quer analisar.
+- **ERC20:** Inclui funções padrão como `totalSupply`, `balanceOf`, `transfer`, `allowance`, `approve`, `transferFrom`.
+- **Admin:** Funções para administração como `mint`, `burn`, `pause`, `unpause`, `setTransferTaxRate`, `setGovernanceContract`.
+- **Vesting:** Funções para gerenciamento de vesting como `startVesting`, `claimVestedTokens`.
+- **Depósito e Saque:** Funções para operações de depósito e saque como `deposit`, `withdraw`.
+- **Consulta:** Função para consulta de saldo do contrato com `getContractBalance`.
+
+A otimização foca na parte de **Depósito e Saque**, onde a vulnerabilidade de reentrância ocorre, removendo funções não relacionadas.
+
+**4.2. Remoção**
+
+A remoção de funções não essenciais ajuda a reduzir a complexidade e facilita a análise da vulnerabilidade. Mantivemos:
+
+- **Depósito e Saque:** Funções `deposit`, `withdraw`, `getContractBalance`.
+- **SafeMath:** Biblioteca para operações matemáticas seguras.
+
+Outras bibliotecas e funções foram removidas para focar na área crítica do problema.
+
+**5. Resultados**
+
+Após as modificações, o SMT Checker foi capaz de identificar com precisão a vulnerabilidade do contrato:
+
+![Imagem do Projeto](https://github.com/manvillarim/Test-SMT-Checker/blob/main/lib/Captura%20de%20tela%20de%202024-08-22%2011-49-19.png)
+
+Isso demonstra que o SMT Checker é eficaz na identificação de vulnerabilidades em contratos inteligentes, especialmente quando o código é otimizado para focar no problema específico em análise.
