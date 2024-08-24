@@ -1,6 +1,6 @@
 # Pesquisa - Verificação Formal de Contratos Inteligentes
 
-**Esse projeto visa demonstrar a funcionalidade do SMT Checker em contratos onde há explosão de dados, e comparar sua atuação com as outras ferramentas de verificação formal da indústria.**
+**Esse projeto visa demonstrar a funcionalidade do SMT Checker em contratos onde há explosão de dados.**
 
 ## Metodologia
 
@@ -8,7 +8,7 @@
 
 **2ª Etapa**: Simplificação do código com preservação semântica, visando facilitar o caminho que o model-checker percorrerá.
 
-**3ª Etapa**: Resultados e comparação com o Certora Prover.
+**3ª Etapa**: Resultados
 
 ## Contrato Vulnerabilities
 
@@ -46,7 +46,7 @@
   
 4. **Simplificação do Código**
 
-   - Para otimizar o contrato visando o funcionamento do model-checker, 3 fases foram feitas:
+   - Para otimizar o contrato visando o funcionamento do model-checker, 2 fases foram feitas:
   
      1. **Compreensão e divisão**:
 
@@ -70,3 +70,7 @@
            - Pausable: Permite que o contrato seja pausado e despausado. --> utilizado pelo vesting e Depósito e saque, mas não é estritamente necessário
           
            - Assim, podemos deixar apenas as funções deposit, withdraw e getContractBalance, além de bliblioteca SafeMath, otimizando ao máximo.
+         
+5. **Resultados**
+
+   - Após as modificações, o SMT checker identifica com perfeição a vulnerabilidade do contrato:
