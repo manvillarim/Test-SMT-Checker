@@ -74,3 +74,5 @@
 5. **Resultados**
 
    - Após as modificações, o SMT checker identifica com perfeição a vulnerabilidade do contrato:
+  
+     ![Imagem do Projeto](https://github.com/manvillarim/Test-SMT-Checker/blob/main/lib/Captura%20de%20tela%20de%202024-08-22%2011-49-19.png)
