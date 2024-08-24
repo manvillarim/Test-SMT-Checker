@@ -59,7 +59,7 @@ A otimização foca na parte de **Depósito e Saque**, onde a vulnerabilidade de
 
 **4.2. Remoção**
 
-A remoção de funções não essenciais ajuda a reduzir a complexidade e facilita a análise da vulnerabilidade. Mantivemos:
+A remoção de funções não essenciais ajuda a reduzir a complexidade e facilita a análise da vulnerabilidade. Foi mantido:
 
 - **Depósito e Saque:** Funções `deposit`, `withdraw`, `getContractBalance`.
 - **SafeMath:** Biblioteca para operações matemáticas seguras.
