@@ -1,8 +1,0 @@
-{
-    "importFilesToOrigRelpaths": {},
-    "primary_contract": "Vulnerable",
-    "specfile": "vulnerable.spec",
-    "specfileOrigRelpath": "vulnerable.spec",
-    "specfilesToImportDecls": {},
-    "type": "spec"
-}
